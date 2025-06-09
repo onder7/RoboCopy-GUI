@@ -57,14 +57,16 @@ class ModernRoboCopyApp(ctk.CTk):
         ctk.CTkLabel(frame, text="Kaynak Dizin:").grid(row=0, column=0, padx=5, pady=5, sticky="w")
         self.source_entry = ctk.CTkEntry(frame, width=400)
         self.source_entry.grid(row=0, column=1, padx=5, pady=5)
-        browse_img = ctk.CTkImage(Image.open("folder.png") if os.path.exists("folder.png") else None, size=(20, 20))
-        ctk.CTkButton(frame, text="Gözat", image=browse_img, width=30, command=self.browse_source).grid(row=0, column=2, padx=5, pady=5)
+        browse_img = None
+        if os.path.exists("folder.png"):
+            browse_img = ctk.CTkImage(Image.open("folder.png"), size=(20, 20))
+        ctk.CTkButton(frame, text="Gözat", image=browse_img, width=100, command=self.browse_source).grid(row=0, column=2, padx=5, pady=5)
         
         # Hedef
         ctk.CTkLabel(frame, text="Hedef Dizin:").grid(row=1, column=0, padx=5, pady=5, sticky="w")
         self.dest_entry = ctk.CTkEntry(frame, width=400)
         self.dest_entry.grid(row=1, column=1, padx=5, pady=5)
-        ctk.CTkButton(frame, text="Gözat", image=browse_img, width=30, command=self.browse_dest).grid(row=1, column=2, padx=5, pady=5)
+        ctk.CTkButton(frame, text="Gözat", image=browse_img, width=100, command=self.browse_dest).grid(row=1, column=2, padx=5, pady=5)
         
         # Dosya filtresi
         ctk.CTkLabel(frame, text="Dosya Filtresi:").grid(row=2, column=0, padx=5, pady=5, sticky="w")
@@ -126,14 +128,18 @@ class ModernRoboCopyApp(ctk.CTk):
         button_frame.pack(fill="x", padx=5, pady=5)
         
         # Butonlar
-        start_img = ctk.CTkImage(Image.open("play.png") if os.path.exists("play.png") else None, size=(20, 20))
+        start_img = None
+        if os.path.exists("play.png"):
+            start_img = ctk.CTkImage(Image.open("play.png"), size=(20, 20))
         self.start_btn = ctk.CTkButton(
             button_frame, text="Kopyalamayı Başlat", 
             image=start_img, command=self.start_copy
         )
         self.start_btn.pack(side="left", padx=5, pady=5)
         
-        stop_img = ctk.CTkImage(Image.open("stop.png") if os.path.exists("stop.png") else None, size=(20, 20))
+        stop_img = None
+        if os.path.exists("stop.png"):
+            stop_img = ctk.CTkImage(Image.open("stop.png"), size=(20, 20))
         self.stop_btn = ctk.CTkButton(
             button_frame, text="Durdur", 
             image=stop_img, command=self.stop_copy,
