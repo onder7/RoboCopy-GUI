@@ -39,4 +39,8 @@ v2
 3. Komut satırından `python dosya_adi.py` komutuyla çalıştırın
 4. Arayüzde kaynak ve hedef dizinleri seçin, istediğiniz parametreleri ayarlayın ve "Kopyalamayı Başlat" butonuna tıklayın
 
+Python Uygulamasını EXE Dosyasına Dönüştürme
+
+pyinstaller --onefile --windowed --name="RoboCopy GUI" mainv2.py
+
 Bu uygulama temel RoboCopy işlevlerini sağlar, ancak daha fazla özellik eklemek için genişletilebilir.
