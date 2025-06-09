@@ -199,7 +199,10 @@ Python Uygulamasını EXE Dosyasına Dönüştürme
 
 pyinstaller --onefile --windowed --name="RoboCopy GUI" mainv3.py
 
-v2 Exe haline aşağıdaki linkten ulaşabilirsiniz
+## v2 Exe haline aşağıdaki linkten ulaşabilirsiniz
+
 https://drive.google.com/file/d/1q8zAr-gbPBTAGo6G9Opne3a3Pt9oo0i0/view?usp=sharing
-v3 Exe haline aşağıdaki linkten ulaşabilirsiniz
+
+## v3 Exe haline aşağıdaki linkten ulaşabilirsiniz
+
 https://drive.google.com/file/d/1q8zAr-gbPBTAGo6G9Opne3a3Pt9oo0i0/view?usp=sharing
