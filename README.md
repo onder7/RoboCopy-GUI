@@ -2,11 +2,95 @@
 
 Aşağıda Python'da tkinter kullanarak oluşturulmuş, RoboCopy benzeri bir GUI dosya kopyalama uygulaması bulunmaktadır. Bu uygulama temel RoboCopy parametrelerini destekler ve kullanıcı dostu bir arayüz sunar.
 
-v1
+# v1 Özellikler
 
 ![image](https://github.com/user-attachments/assets/608d07ca-99ef-4b59-94ca-68c100584490)
 
-v2
+Temel RoboCopy Parametreleri:
+
+Alt dizinleri kopyalama (/S)
+
+Boş dizinleri kopyalama (/E)
+
+Varolan dosyaların üzerine yazma (/IS)
+
+Aynalama modu (/MIR)
+
+Dosya taşıma (/MOV)
+
+Dosya filtresi (*.txt gibi)
+
+GUI Özellikleri:
+
+Kaynak ve hedef dizin seçimi için gözat butonları
+
+İşlem ilerleme çubuğu
+
+Detaylı günlük ekranı
+
+Kopyalama işlemini durdurma butonu
+
+Diğer Özellikler:
+
+Uzun süren işlemler için thread kullanımı
+
+Hata yönetimi
+
+Kullanıcı dostu mesajlar
+
+Python Uygulamasını EXE Dosyasına Dönüştürme
+
+pyinstaller --onefile --windowed --name="RoboCopy GUI" mainv.py
+
+## v2 Yeni Özellikler
+Modern Arayüz:
+
+CustomTkinter ile güncel tasarım
+
+Koyu/açık tema desteği
+
+Sekmeli arayüz (Temel/Gelişmiş/Günlük ayarları)
+
+Gelişmiş Fonksiyonlar:
+
+Çoklu dosya filtresi (örn: *.txt;*.docx)
+
+Purge özelliği (/PURGE)
+
+Çoklu thread desteği (/MT)
+
+Tekrar deneme sayısı (/R)
+
+Kullanıcı Deneyimi İyileştirmeleri:
+
+Daha detaylı progress göstergesi
+
+Dosya sayacı
+
+Sağ tık menüsü (günlüğü temizle/kopyala)
+
+Buton ikonları
+
+Daha iyi durum takibi
+
+Hata Yönetimi:
+
+Daha kapsamlı hata mesajları
+
+Thread güvenliği
+
+Kullanım
+Kaynak ve hedef dizinleri seçin
+
+İstenilen parametreleri ayarlayın
+
+"Kopyalamayı Başlat" butonuna tıklayın
+
+İşlem ilerlemesini gerçek zamanlı olarak takip edin
+
+Gerekirse "Durdur" butonuyla işlemi durdurun
+
+Bu modern versiyon, orijinal RoboCopy'nin temel işlevlerini korurken çok daha kullanıcı dostu bir arayüz sunmaktadır.
 
 ![image](https://github.com/user-attachments/assets/df35bc0d-1ad7-4090-bd42-d32ca28ab4f8)
 
@@ -102,4 +186,8 @@ Bilgisayarı Kapatma:
 
 Aynı sekmedeki seçeneği işaretleyin
 
-Kopyalama tamamlandığında bilgisayar kapanacaktır
+Kopyalama tamamlandığında bilgisayar kapanacaktır.
+
+Python Uygulamasını EXE Dosyasına Dönüştürme
+
+pyinstaller --onefile --windowed --name="RoboCopy GUI" mainv3.py
