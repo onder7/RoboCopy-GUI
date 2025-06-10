@@ -14,7 +14,7 @@ class ModernRoboCopyApp(ctk.CTk):
         super().__init__()
         
         # Uygulama ayarları
-        self.title("Modern RoboCopy GUI")
+        self.title("Modern RoboCopy GUI v3 Önder Mönder")
         self.geometry("1000x800")
         self.minsize(900, 700)
         
@@ -132,18 +132,19 @@ class ModernRoboCopyApp(ctk.CTk):
     
     def create_new_features_section(self):
         # Yeni özellikler sekmesi
-        self.tab4 = self.tabview.add("Yeni Özellikler")
+        self.tab4 = self.tabview.add("Ek Özellikler")
         
         # Değişiklik algılama
-        self.monitor_changes = ctk.CTkSwitch(self.tab4, text="Kaynakta değişiklik algıladığında kopyala")
-        self.monitor_changes.pack(pady=5, anchor="w")
-        
-        self.monitor_interval = ctk.CTkEntry(self.tab4, placeholder_text="Kontrol aralığı (dakika)", width=200)
+        #self.monitor_changes = ctk.CTkSwitch(self.tab4, text="Kaynakta değişiklik algıladığında kopyala")
+        #self.monitor_changes.pack(pady=5, anchor="w")
+        self.monitor_changes_switch = ctk.CTkSwitch(self.tab4, text="Kaynakta değişiklik algıladığında kopyala")
+        self.monitor_changes_switch.pack(pady=5, anchor="w")
+        self.monitor_interval = ctk.CTkEntry(self.tab4, placeholder_text="örn: 5", width=200)
         self.monitor_interval.pack(pady=5, anchor="w")
-        self.monitor_interval.insert(0, "5")
+        self.monitor_interval.insert(0, "5")  # Varsayılan 5 saniye
         
         # Zamanlanmış görev
-        ctk.CTkLabel(self.tab4, text="Zamanlanmış Kopyalama:").pack(pady=(10,5), anchor="w")
+        ctk.CTkLabel(self.tab4, text="Kontrol Aralığı (saniye):").pack(pady=(5,0), anchor="w")
         
         self.schedule_enable = ctk.CTkSwitch(self.tab4, text="Zamanlanmış kopyalama etkin")
         self.schedule_enable.pack(pady=5, anchor="w")
@@ -272,6 +273,7 @@ class ModernRoboCopyApp(ctk.CTk):
         """Kaynak dizindeki değişiklikleri kontrol eder"""
         changed_files = []
         
+        # Önce kaynak dizindeki tüm dosyaları kontrol et
         for root_dir, _, files in os.walk(source):
             for file in files:
                 src_file = os.path.join(root_dir, file)
@@ -281,18 +283,28 @@ class ModernRoboCopyApp(ctk.CTk):
                 # Hedef dosya yoksa veya değişmişse
                 if not os.path.exists(dst_file):
                     changed_files.append((src_file, dst_file))
-                else:
-                    # Dosya boyutu veya hash değişmiş mi kontrol et
-                    src_stat = os.stat(src_file)
-                    dst_stat = os.stat(dst_file)
+                    continue
                     
-                    if (src_stat.st_size != dst_stat.st_size or 
-                        src_stat.st_mtime > dst_stat.st_mtime or
-                        self.calculate_file_hash(src_file) != self.calculate_file_hash(dst_file)):
-                        changed_files.append((src_file, dst_file))
+                # Dosya boyutu veya değişiklik zamanı kontrolü
+                src_stat = os.stat(src_file)
+                dst_stat = os.stat(dst_file)
+                
+                if (src_stat.st_size != dst_stat.st_size or 
+                    src_stat.st_mtime > dst_stat.st_mtime):
+                    changed_files.append((src_file, dst_file))
+        
+        # Aynalama modunda, hedefte olup kaynakta olmayan dosyaları da kontrol et
+        if self.mirror.get():
+            for root_dir, _, files in os.walk(dest):
+                for file in files:
+                    dst_file = os.path.join(root_dir, file)
+                    rel_path = os.path.relpath(dst_file, dest)
+                    src_file = os.path.join(source, rel_path)
+                    
+                    if not os.path.exists(src_file):
+                        changed_files.append((None, dst_file))  # Silinecek dosya
         
         return changed_files
-    
     def toggle_monitoring(self):
         """Değişiklik izleme modunu aç/kapat"""
         if hasattr(self, 'monitoring_active') and self.monitoring_active:
@@ -315,38 +327,42 @@ class ModernRoboCopyApp(ctk.CTk):
         
         try:
             interval = int(self.monitor_interval.get())
-        except ValueError:
-            messagebox.showerror("Hata", "Geçersiz kontrol aralığı!")
-            return
+            if interval < 1:  # Minimum 1 saniye
+                raise ValueError("Aralık en az 1 saniye olmalıdır")
+        except ValueError as e:
+            messagebox.showerror("Hata", f"Geçersiz kontrol aralığı! {str(e)}")
+            return  # Bu return ifadesi try-except bloğunun içinde olmalı
         
         self.monitoring_active = True
         self.monitor_btn.configure(text="İzlemeyi Durdur", fg_color="red")
-        self.log_message(f"Değişiklik izleme başlatıldı. Her {interval} dakikada bir kontrol edilecek.")
-        
+        self.log_message(f"Değişiklik izleme başlatıldı. Her {interval} saniyede bir kontrol edilecek.")
+
         # İzleme thread'ini başlat
-        self.monitor_thread = threading.Thread(target=self.monitor_changes, args=(source, dest, interval), daemon=True)
+        self.monitor_thread = threading.Thread(
+            target=self.monitor_changes_thread,
+            args=(source, dest, interval),
+            daemon=True
+        )
         self.monitor_thread.start()
-    
+
     def stop_monitoring(self):
         """Değişiklik izlemeyi durdur"""
         self.monitoring_active = False
         self.monitor_btn.configure(text="İzlemeyi Başlat", fg_color=["#3B8ED0", "#1F6AA5"])
         self.log_message("Değişiklik izleme durduruldu.")
     
-    def monitor_changes(self, source, dest, interval_minutes):
-        """Düzenli aralıklarla değişiklikleri kontrol eder"""
+    def monitor_changes_thread(self, source, dest, interval_seconds):
+        """Düzenli aralıklarla değişiklikleri kontrol eder (saniye cinsinden)"""
         while self.monitoring_active:
             changed_files = self.check_for_changes(source, dest)
             
             if changed_files and self.monitoring_active:
                 self.log_message(f"{len(changed_files)} dosyada değişiklik tespit edildi. Kopyalama başlatılıyor...")
                 self.copy_files(source, dest, specific_files=changed_files)
-            
-            # Bekleme süresi
-            for _ in range(interval_minutes * 60):
-                if not self.monitoring_active:
-                    break
-                time.sleep(1)
+
+                
+                time.sleep(interval_seconds)
+
     
     def schedule_copy(self):
         """Zamanlanmış kopyalama ayarlar"""
@@ -440,8 +456,21 @@ class ModernRoboCopyApp(ctk.CTk):
             
             if specific_files:
                 # Belirli dosyaları kopyala
-                files_to_copy = specific_files
-                self.total_files = len(files_to_copy)
+                files_to_copy = [f for f in specific_files if f[0] is not None]  # None olanları (silinecekleri) filtrele
+                files_to_delete = [f[1] for f in specific_files if f[0] is None]  # Silinecek dosyalar
+                self.total_files = len(files_to_copy) + len(files_to_delete)
+                
+                # Silinecek dosyaları işle
+                for file in files_to_delete:
+                    try:
+                        os.remove(file)
+                        self.log_message(f"Silindi: {file}")
+                        self.copied_files += 1
+                        self.update_progress(self.copied_files, self.total_files)
+                    except Exception as e:
+                        self.log_message(f"Silme hatası: {file} - {str(e)}")
+                        self.copied_files += 1
+                        self.update_progress(self.copied_files, self.total_files)
             else:
                 # Tüm dosyaları tarayarak liste oluştur
                 if self.copy_subdirs.get() or self.empty_dirs.get() or self.mirror.get() or self.purge.get():
