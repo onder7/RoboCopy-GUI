@@ -2,7 +2,7 @@
 
 Aşağıda Python'da tkinter kullanarak oluşturulmuş, RoboCopy benzeri bir GUI dosya kopyalama uygulaması bulunmaktadır. Bu uygulama temel RoboCopy parametrelerini destekler ve kullanıcı dostu bir arayüz sunar.
 
-
+##! www
 
 ## v2 Exe haline aşağıdaki linkten ulaşabilirsiniz
 https://drive.google.com/file/d/1q8zAr-gbPBTAGo6G9Opne3a3Pt9oo0i0/view?usp=sharing
