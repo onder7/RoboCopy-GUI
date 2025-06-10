@@ -2,8 +2,11 @@
 
 Aşağıda Python'da tkinter kullanarak oluşturulmuş, RoboCopy benzeri bir GUI dosya kopyalama uygulaması bulunmaktadır. Bu uygulama temel RoboCopy parametrelerini destekler ve kullanıcı dostu bir arayüz sunar.
 
-##! www
 
+## ÖNEMLİ NOT ...!
+Katnak değişiklik algılandığında kopyalaama seçeneğinde sadece dosya kopyalar, klasör kopyala işlemi yapılmaz (Belki ilerde düzeltirim) fakat kopyalanmış klaösr içinde dosya mencutse değişen yada eklenen dosyayı verilen süre içinde kopyalar.
+##Diğer Önemli bir konu..!!
+Aynalamam yaparsanız kaynak dizinden hedef dizine koplanan boş klasör olursa hedefte siler, eğer kopyalam değil taşıma seçeneği yaparsanız boş klasörlerini her iki tarafdata silinecektir. 
 ## v2 Exe haline aşağıdaki linkten ulaşabilirsiniz
 https://drive.google.com/file/d/1q8zAr-gbPBTAGo6G9Opne3a3Pt9oo0i0/view?usp=sharing
 ## v3 Exe haline aşağıdaki linkten ulaşabilirsiniz
